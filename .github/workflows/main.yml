@@ -38,7 +38,7 @@ jobs:
       run: |
         mkdir -p bin
         ls -l bin
-        go -ldflags="-s -w" -o bin/dataset-tweeter build main.go
+        go build -ldflags="-s -w" -o bin/dataset-tweeter main.go
 
         #    - uses: actions/upload-artifact@3446296876d12d4e3a0f3145a3c87e67bf0a16b5
         #      name: Persist binary
