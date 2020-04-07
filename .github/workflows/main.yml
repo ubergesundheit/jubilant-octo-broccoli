@@ -40,16 +40,18 @@ jobs:
         ls -l bin
         go build -ldflags="-s -w" -o bin/dataset-tweeter main.go
 
-        #    - uses: actions/upload-artifact@3446296876d12d4e3a0f3145a3c87e67bf0a16b5
-        #      name: Persist binary
-        #      with:
-        #        name: dataset-tweeter-artifact
-        #        path: dataset-tweeter
+    - name: Removeme Create a dummy file
+      run: echo '{}' > data-yesterday.json
 
-    - name: Run a multi-line script
+    - uses: actions/upload-artifact@v1
+      with:
+        name: previous-datasets-artifact
+        path: data-yesterday.json
+
+    - name: Execute the binary
       run: |
+        mkdir -p data
         ./bin/dataset-tweeter
-        echo "yolo" > test.txt
 
     - name: Print a secret
       run: echo ${{ secrets.SUPER_SECRET }}
