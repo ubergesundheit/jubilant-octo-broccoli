@@ -40,24 +40,22 @@ jobs:
         ls -l bin
         go build -ldflags="-s -w" -o bin/dataset-tweeter main.go
 
-    - uses: actions/download-artifact@v1
+    - name: Cache datasets
+      uses: actions/cache@70655ec8323daeeaa7ef06d7c56e1b9191396cbe
+      env:
+        cache-name: previous-datasets
       with:
-        name: previous-datasets-artifact
+        path: data/previous-datasets.json
+        key: ${{ env.cache-name }}
 
     - name: ls
       run: ls -lah
 
-#    - name: Removeme Create a dummy file
-#      run: echo '{}' > data-yesterday.json
-#
-#    - uses: actions/upload-artifact@v1
-#      with:
-#        name: previous-datasets-artifact
-#        path: data-yesterday.json
-
-    - name: Execute the binary
+    - name: Removeme Create a dummy file
       run: |
         mkdir -p data
+        ls -lah data
+        echo '{}' > data/previous-datasets.json
         ./bin/dataset-tweeter
 
     - name: Print a secret
