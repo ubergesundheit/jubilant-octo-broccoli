@@ -40,13 +40,20 @@ jobs:
         ls -l bin
         go build -ldflags="-s -w" -o bin/dataset-tweeter main.go
 
-    - name: Removeme Create a dummy file
-      run: echo '{}' > data-yesterday.json
-
-    - uses: actions/upload-artifact@v1
+    - uses: actions/download-artifact@v1
       with:
         name: previous-datasets-artifact
-        path: data-yesterday.json
+
+    - name: ls
+      run: ls -lah
+
+#    - name: Removeme Create a dummy file
+#      run: echo '{}' > data-yesterday.json
+#
+#    - uses: actions/upload-artifact@v1
+#      with:
+#        name: previous-datasets-artifact
+#        path: data-yesterday.json
 
     - name: Execute the binary
       run: |
