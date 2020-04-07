@@ -10,31 +10,36 @@ on:
   schedule:
     - cron: '*/5 * * * *'
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  scrape-and-tweet:
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     - name: Set up Go 1.14
       uses: actions/setup-go@9fbc767707c286e568c92927bbf57d76b73e0892
       with:
         go-version: 1.14
       id: go
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+
     - uses: actions/checkout@01aecccf739ca6ff86c0539fbc67a7a5007bbc81
 
-    # Runs a single command using the runners shell
-    - name: Run a one-line script
-      run: go build main.go
+    - uses: actions/download-artifact@18f0f591fbc635562c815484d73b6e8e3980482e
+      name: download previous binary
+      with:
+        name: dataset-tweeter-artifact
 
-    # Runs a set of commands using the runners shell
+    - name: build binary
+      run: go -ldflags="-s -w" -o dataset-tweeter build main.go
+
+    - uses: actions/upload-artifact@3446296876d12d4e3a0f3145a3c87e67bf0a16b5
+      name: Persist binary
+      with:
+        name: dataset-tweeter-artifact
+        path: dataset-tweeter
+
     - name: Run a multi-line script
       run: |
         ./main
+        echo "yolo" > test.txt
 
     - name: Print a secret
       run: echo ${{ secrets.SUPER_SECRET }}
