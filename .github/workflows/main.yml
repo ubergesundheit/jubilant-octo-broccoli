@@ -45,7 +45,7 @@ jobs:
     - name: Execute notifier
       run: ./bin/dataset-tweeter > "data-$(date -Idate).json"
 
-    - name: Upload data of today
+    - name: Upload data of today if changed
       run: |
         export TODAY=$(date -Idate)
         ls -lah
@@ -53,6 +53,3 @@ jobs:
           printf 'file "%s" is different from "%s". Uploading..\n' "data-${TODAY}.json" "data-previous.json"
           ./mc cp "data-${TODAY}.json" "c4m/codeformuenster/dkan-opendata-portal-ms/data-${TODAY}.json"
         fi
-
-    - name: Print a secret
-      run: echo ${{ secrets.SUPER_SECRET }}
