@@ -48,7 +48,7 @@ jobs:
 
     - name: Run a multi-line script
       run: |
-        ./main
+        ./bin/dataset-tweeter
         echo "yolo" > test.txt
 
     - name: Print a secret
