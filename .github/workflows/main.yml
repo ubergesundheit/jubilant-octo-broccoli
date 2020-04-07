@@ -22,19 +22,29 @@ jobs:
 
     - uses: actions/checkout@01aecccf739ca6ff86c0539fbc67a7a5007bbc81
 
-    - uses: actions/download-artifact@18f0f591fbc635562c815484d73b6e8e3980482e
-      name: download previous binary
+    - name: Cache binary
+      uses: actions/cache@70655ec8323daeeaa7ef06d7c56e1b9191396cbe
+      env:
+        cache-name: cache-built-binary
       with:
-        name: dataset-tweeter-artifact
+        path: bin/dataset-tweeter
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('dataset-tweeter') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
 
     - name: build binary
-      run: go -ldflags="-s -w" -o dataset-tweeter build main.go
+      run: |
+        mkdir -p bin
+        ls -l bin
+        go -ldflags="-s -w" -o bin/dataset-tweeter build main.go
 
-    - uses: actions/upload-artifact@3446296876d12d4e3a0f3145a3c87e67bf0a16b5
-      name: Persist binary
-      with:
-        name: dataset-tweeter-artifact
-        path: dataset-tweeter
+        #    - uses: actions/upload-artifact@3446296876d12d4e3a0f3145a3c87e67bf0a16b5
+        #      name: Persist binary
+        #      with:
+        #        name: dataset-tweeter-artifact
+        #        path: dataset-tweeter
 
     - name: Run a multi-line script
       run: |
