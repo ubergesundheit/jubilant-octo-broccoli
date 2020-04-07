@@ -48,9 +48,10 @@ jobs:
     - name: Upload data of today
       run: |
         export TODAY=$(date -Idate)
+        ls -lah
         if [ -n "$(cmp data-${TODAY}.json data-previous.json)" ]; then
-          printf 'The file "%s" is different from "%s"\n' "$file1" "$file2"
-          ./mc cp data-previous.json "c4m/codeformuenster/dkan-opendata-portal-ms/data-${TODAY}.json"
+          printf 'file "%s" is different from "%s". Uploading..\n' "data-${TODAY}.json" "data-previous.json"
+          ./mc cp "data-${TODAY}.json" "c4m/codeformuenster/dkan-opendata-portal-ms/data-${TODAY}.json"
         fi
 
     - name: Print a secret
