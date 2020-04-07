@@ -33,8 +33,25 @@ jobs:
         wget https://dl.min.io/client/mc/release/linux-amd64/mc
         chmod +x mc
 
-    - name: Execute
-      run: ./bin/dataset-tweeter
+    - name: Setup mc
+      run: ./mc config host add c4m ${{ secrets.s3_url }} ${{ secrets.s3_accesskey }} ${{ secrets.s3_secretkey }} --api S3v4
+
+    - name: Get data from yesterday
+      run: |
+        export YESTERDAY=$(date -Idate -d yesterday)
+        ./mc cp "c4m/codeformuenster/dkan-opendata-portal-ms/data-${YESTERDAY}.json" "data-${YESTERDAY}.json"
+        mv "data-${YESTERDAY}.json" data-previous.json
+
+    - name: Execute notifier
+      run: ./bin/dataset-tweeter > "data-$(date -Idate).json"
+
+    - name: Upload data of today
+      run: |
+        export TODAY=$(date -Idate)
+        if [ -n "$(cmp data-${TODAY}.json data-previous.json)" ]; then
+          printf 'The file "%s" is different from "%s"\n' "$file1" "$file2"
+          ./mc cp data-previous.json "c4m/codeformuenster/dkan-opendata-portal-ms/data-${TODAY}.json"
+        fi
 
     - name: Print a secret
       run: echo ${{ secrets.SUPER_SECRET }}
